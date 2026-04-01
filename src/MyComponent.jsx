@@ -1,0 +1,1 @@
+export default function MyComponent(){return <div>React Font Pattern</div>}
