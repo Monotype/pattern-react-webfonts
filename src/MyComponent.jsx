@@ -1,1 +1,1 @@
-export default function MyComponent(){return <div>React Font Pattern</div>}
+export default function MyComponent(){return <div style={{fontFamily:"var(--font-family)"}}>React font pattern demo</div>}
