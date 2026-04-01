@@ -1,3 +1,2 @@
-# pattern-react-webfonts
-
-This repository demonstrates a React pattern where fonts are loaded by the host app to avoid redistribution.
+# pattern-react-webfonts runnable scaffold
+Minimal runnable implementation placeholder.
