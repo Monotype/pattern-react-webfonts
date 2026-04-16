@@ -1,1 +1,29 @@
-{"name":"react-webfonts","dependencies":{"react":"18.0.0"}}
+{
+  "name": "react-webfonts",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "peerDependencies": {
+    "react": "^18.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.0",
+    "react": "^18.3.1",
+    "vite": "^8.0.3"
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  }
+}
