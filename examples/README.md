@@ -8,7 +8,7 @@ A minimal runnable application that demonstrates how a consuming project provide
 - `App.jsx` — imports `MyComponent` from the library and applies the font via the CSS variable
 - `main.jsx` — mounts the app and imports `fonts.css`
 
-The font file itself is not included. Place a `.woff2` file in `public/fonts/` and update the `src` path in `fonts.css` to match.
+This repository includes **`public/fonts/MyFont.woff2`**, a heavily subsetted version of Gotham Regular. **Redistribution rights for that file are not granted to you.** For your own project, replace the file and the `src:` path in `examples/consumer-app/fonts.css`. See `public/fonts/placeholder.txt` for placement notes.
 
 ## Running
 
@@ -18,3 +18,7 @@ npm run dev
 ```
 
 Requires Node.js 18+.
+
+## Notes
+
+This app has no `vite.config.js`. Vite 8 processes `.jsx` files via esbuild by default, so builds and `npm run dev` work without `@vitejs/plugin-react`. The trade-off is no React Fast Refresh in dev mode — acceptable for a minimal demo.
