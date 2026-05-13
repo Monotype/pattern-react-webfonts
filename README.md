@@ -2,7 +2,7 @@
 
 > License-safe web font delivery in a React component library using CSS variables.
 
-This repository demonstrates the correct pattern for font delivery in a shared React component library. The library references fonts only through CSS custom properties — it never bundles, embeds, or redistributes font files. Font definitions and license-covered assets remain with the consuming application.
+This repository demonstrates the correct pattern for font delivery in a shared React component library. The library references fonts only through CSS custom properties — it never bundles, embeds, or redistributes font files. Font definitions and license-covered assets remain with the consuming application, which serves font files from its own deployment (end users’ browsers still download font data for rendering — that is normal for the web; the pattern avoids putting font binaries inside the installable library package).
 
 ## What this pattern demonstrates
 
@@ -22,6 +22,9 @@ This pattern implements the following assertions from [reference-fonts-implement
 - `lc-006` — using a font differs from distributing a font
 - `pc-008` — self-hosting web fonts requires a web font license; desktop licenses do not permit web delivery
 - `bd-001` — self-hosted fonts integrate into CI/CD pipelines as versioned static assets
+- `pc-010` — cross-origin font delivery requires CORS configuration
+
+In the consumer example, `@font-face` points at **`/fonts/...` on the same origin** as the Vite app, so you typically do not hit cross-origin `@font-face` blocking. **`pc-010` still applies** if you move font files to another origin (for example a CDN): that host must send correct `Access-Control-Allow-Origin` (and related) headers on font responses.
 
 ## Repository structure
 
@@ -76,4 +79,4 @@ Use GitHub Discussions (Q&A category) for questions about this pattern.
 
 ## License
 
-Sample application **code** in this repository is licensed under the [MIT License](LICENSE). The **subset font file** in `public/fonts/` is included **only** as a build/CI demonstration asset; it is **not** licensed to third parties for separate redistribution—use fonts you have rights to ship. Canonical assertion text in [reference-fonts-implementation](https://github.com/Monotype/reference-fonts-implementation) remains subject to that repository’s terms.
+Sample application **code** in this repository is licensed under the [MIT License](LICENSE). The **subset font file** in `examples/consumer-app/public/fonts/` is included **only** as a build/CI demonstration asset; it is **not** licensed to third parties for separate redistribution—use fonts you have rights to ship. Canonical assertion text in [reference-fonts-implementation](https://github.com/Monotype/reference-fonts-implementation) remains subject to that repository’s terms.
