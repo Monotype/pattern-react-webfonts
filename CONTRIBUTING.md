@@ -15,5 +15,5 @@ This repository is a reference implementation pattern. Changes should remain min
 
 - Keep the library minimal — `src/` demonstrates the pattern, it is not a production component library
 - The CSS variable approach in `src/MyComponent.jsx` is intentional; do not replace it with direct font imports or bundled font files
-- Do not commit font files; the `.gitignore` exclusion of font extensions must remain intact
+- The **demo subset** font under `examples/consumer-app/public/fonts/` is intentional so CI and `next build` succeed; do not add unrelated font binaries without legal review. The `.gitignore` rule for `*.woff2` still applies to **new** files unless explicitly whitelisted or force-added
 - If a canonical assertion changes in the reference repo, update this pattern to stay aligned

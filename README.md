@@ -30,6 +30,10 @@ This pattern implements the following assertions from [reference-fonts-implement
 
 ## Usage
 
+1. Obtain font files under a valid Monotype web font license (this repo ships a **small subset** for build/CI; use your own files in forks or production)
+2. Place `.woff2` files in `examples/consumer-app/public/fonts/` and update the `src` path in `examples/consumer-app/fonts.css` (`@font-face`) to match. Additional font names remain **gitignored** unless you force-add (`git add -f`) or add a `!` exception in `.gitignore`
+3. Install and run:
+
 ### Build the library
 
 ```bash
@@ -45,11 +49,13 @@ npm install
 npm run dev
 ```
 
-Before running, place a `.woff2` font file in `examples/consumer-app/public/fonts/` and update the `src` path in `examples/consumer-app/fonts.css` to match. Font files are gitignored — supply your own under a valid Monotype web font license.
+This repository includes a committed **`package-lock.json`**. After cloning, use **`npm ci`** when you want installs to match CI and the lockfile exactly; use **`npm install`** when you intentionally add or upgrade dependencies (then commit the updated lockfile).
 
 ## Font files
 
-Font files are intentionally excluded from this repository via `.gitignore`. The consuming application is responsible for providing font files under a valid license. See `examples/consumer-app/public/fonts/placeholder.txt` for placement instructions.
+This repository includes **`examples/consumer-app/public/fonts/MyFont.woff2`**, a heavily subsetted version of Gotham Regular, so **`npm run build`** and **GitHub Actions** work out of the box. It demonstrates self-hosting only; **redistribution rights for that file are not granted to you**—use fonts you are licensed to deploy. For your own project, replace the file and the `src:` path in `examples/consumer-app/fonts.css`. See `examples/consumer-app/public/fonts/placeholder.txt` for placement notes.
+
+To commit a different binary despite `*.woff2` in `.gitignore`, use **`git add -f public/fonts/YourFile.woff2`** once, or add a **`!public/fonts/YourFile.woff2`** line after the `*.woff2` rule.
 
 ## Requirements
 
@@ -70,4 +76,4 @@ Use GitHub Discussions (Q&A category) for questions about this pattern.
 
 ## License
 
-Code in this repository is provided for educational and interoperability purposes. Font files are not included. Canonical guidance © Monotype Imaging Inc.
+Sample application **code** in this repository is licensed under the [MIT License](LICENSE). The **subset font file** in `public/fonts/` is included **only** as a build/CI demonstration asset; it is **not** licensed to third parties for separate redistribution—use fonts you have rights to ship. Canonical assertion text in [reference-fonts-implementation](https://github.com/Monotype/reference-fonts-implementation) remains subject to that repository’s terms.

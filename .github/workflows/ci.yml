@@ -1,0 +1,33 @@
+# Check that the pattern stays compile-clean.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies - library
+        run: npm ci
+
+      - name: Build - library
+        run: npm run build
+
+      - name: Install dependencies - consumer app
+        run: npm ci
+	working-directory: examples/consumer-app
+
+      - name: Build - consumer app
+        run: npm run dev
+	working-directory: examples/consumer-app
