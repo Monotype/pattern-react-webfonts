@@ -29,8 +29,8 @@ jobs:
 
       - name: Install dependencies - consumer app
         run: npm ci
-	working-directory: examples/consumer-app
+        working-directory: examples/consumer-app
 
       - name: Build - consumer app
         run: npm run dev
-	working-directory: examples/consumer-app
+        working-directory: examples/consumer-app
