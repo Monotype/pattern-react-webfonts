@@ -22,7 +22,8 @@ This pattern implements the following assertions from [reference-fonts-implement
 - `lc-006` — using a font differs from distributing a font
 - `pc-008` — self-hosting web fonts requires a web font license; desktop licenses do not permit web delivery
 - `bd-001` — self-hosted fonts integrate into CI/CD pipelines as versioned static assets
-- `pc-010` — cross-origin font delivery requires CORS configuration
+- `pc-010` — cross-origin font delivery requires CORS configuration; missing headers cause silent font blocking
+- `pc-012` — some Monotype web font licenses require a tracking script alongside self-hosted font files; this pattern covers `@font-face` / asset delivery only—add a script to the consumer app (for example in `index.html` or via your framework) when your license mandates tracking
 
 In the consumer example, `@font-face` points at **`/fonts/...` on the same origin** as the Vite app, so you typically do not hit cross-origin `@font-face` blocking. **`pc-010` still applies** if you move font files to another origin (for example a CDN): that host must send correct `Access-Control-Allow-Origin` (and related) headers on font responses.
 
