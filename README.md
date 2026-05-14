@@ -33,10 +33,6 @@ In the consumer example, `@font-face` points at **`/fonts/...` on the same origi
 
 ## Usage
 
-1. Obtain font files under a valid Monotype web font license (this repo ships a **small subset** for build/CI; use your own files in forks or production)
-2. Place `.woff2` files in `examples/consumer-app/public/fonts/` and update the `src` path in `examples/consumer-app/fonts.css` (`@font-face`) to match. Additional font names remain **gitignored** unless you force-add (`git add -f`) or add a `!` exception in `.gitignore`
-3. Install and run:
-
 ### Build the library
 
 ```bash
@@ -52,13 +48,17 @@ npm install
 npm run dev
 ```
 
-This repository includes a committed **`package-lock.json`**. After cloning, use **`npm ci`** when you want installs to match CI and the lockfile exactly; use **`npm install`** when you intentionally add or upgrade dependencies (then commit the updated lockfile).
+Before running, place a `.woff2` font file in `examples/consumer-app/public/fonts/` and update the URL in `examples/consumer-app/fonts.css` to match. Font files are gitignored by default — supply your own under a valid Monotype web font license.
+
+This repository includes committed **`package-lock.json`** files at the **root** and under **`examples/consumer-app/`**. After cloning, use **`npm ci`** in each directory when you want installs to match CI and the lockfiles exactly; use **`npm install`** when you intentionally change dependencies (then commit the updated lockfile(s)).
+
+To verify the consumer app builds like CI: `cd examples/consumer-app && npm ci && npm run build`.
 
 ## Font files
 
-This repository includes **`examples/consumer-app/public/fonts/MyFont.woff2`**, a heavily subsetted version of Gotham Regular, so **`npm run build`** and **GitHub Actions** work out of the box. It demonstrates self-hosting only; **redistribution rights for that file are not granted to you**—use fonts you are licensed to deploy. For your own project, replace the file and the `src:` path in `examples/consumer-app/fonts.css`. See `examples/consumer-app/public/fonts/placeholder.txt` for placement notes.
+Font files are **gitignored** by default. You may supply your own under a valid Monotype web font license, or force-add a small subset for CI (see below). When a subset `.woff2` is present in `examples/consumer-app/public/fonts/`, it is subject to the Monotype limited-testing terms in **LICENSE**, not general web use or redistribution—see **License** at the end of this README. See `examples/consumer-app/public/fonts/placeholder.txt` for placement instructions.
 
-To commit a different binary despite `*.woff2` in `.gitignore`, use **`git add -f examples/consumer-app/public/fonts/YourFile.woff2`** once, or add a **`!examples/consumer-app/public/fonts/YourFile.woff2`** line after the `*.woff2` rule.
+**Subset font in-repo (for CI):** To commit a small, licensed subset `.woff2` so `vite build` has a real file at the path referenced in `fonts.css`, use once: `git add -f examples/consumer-app/public/fonts/MyFont.woff2` (adjust the filename to match `fonts.css`). After that, the file stays tracked like any other source file.
 
 ## Requirements
 
@@ -79,4 +79,4 @@ Use GitHub Discussions (Q&A category) for questions about this pattern.
 
 ## License
 
-Sample application **code** in this repository is licensed under the [MIT License](LICENSE). The **subset font file** in `examples/consumer-app/public/fonts/` is included **only** as a build/CI demonstration asset; it is **not** licensed to third parties for separate redistribution—use fonts you have rights to ship. Canonical assertion text in [reference-fonts-implementation](https://github.com/Monotype/reference-fonts-implementation) remains subject to that repository’s terms.
+Sample application code in this repository is licensed under the MIT License. The subset font file in examples/consumer-app/public/fonts/ is included only as a build/CI demonstration asset and licensed for limited testing purposes only; it is not licensed for regular use on websites or redistribution. Please refer to the LICENSE file in the repository for both licenses. Canonical assertion text in [reference-fonts-implementation](https://github.com/Monotype/reference-fonts-implementation) remains subject to that repository’s terms.
