@@ -15,7 +15,7 @@ This README is explanatory and non-binding; authoritative assertion text lives i
 - The library (`src/`) uses `font-family: var(--font-family)` (see `src/MyComponent.jsx`) — no `.woff2` imports or font binaries in the published package.
 - Components never embed or re-export font files; the built `dist/` output contains only JavaScript and CSS that reference variables.
 
-### How the consumer application owns font files and @font-face declarations
+### How the consumer application owns font files and `@font-face` declarations
 
 - The consumer app (`examples/consumer-app/`) defines `@font-face` in `fonts.css` and places files under `public/fonts/` (served by Vite as `/fonts/...`).
 - `examples/consumer-app/main.jsx` imports `./fonts.css` before rendering so the browser parses `@font-face` first.
@@ -48,7 +48,7 @@ A component library that bundles font files redistributes them to every applicat
 
 Use this pattern when your component library is framework-agnostic or your app does not use Next.js. Use [pattern-nextjs-webfonts](https://github.com/Monotype/pattern-nextjs-webfonts) when the app is Next.js and you want build-time font optimization.
 
-## How to Implement @font-face in the Consumer Application
+## How to Implement `@font-face` in the Consumer Application
 
 **This repository's demo** uses `examples/consumer-app/fonts.css` with `font-family: "MyFont"`, `src: url("/fonts/MyFont.woff2")`, and `:root { --font-family: "MyFont", system-ui, sans-serif; }`, with the file at `examples/consumer-app/public/fonts/MyFont.woff2`.
 
