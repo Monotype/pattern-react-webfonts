@@ -160,7 +160,7 @@ The most common cause is a missing `Access-Control-Allow-Origin` header when fon
 
 ### Do I need a different license to self-host Monotype fonts compared to using a cloud CDN service?
 
-Yes. A **desktop** license does not permit web delivery. **Self-hosting** requires a web font license that explicitly allows serving WOFF2/WOFF from your infrastructure. **Monotype CDN** delivery is governed by separate terms (often including usage metering). Confirm your agreement covers self-hosted delivery and whether a tracking script is required alongside `@font-face`. See [reference-fonts-implementation](https://github.com/Monotype/reference-fonts-implementation).
+Yes. A **desktop** license usually does not permit web delivery. **Self-hosting** requires a web font license that explicitly allows serving WOFF2/WOFF from your infrastructure. **Monotype CDN** delivery is governed by separate terms (often including usage metering). Confirm your agreement covers self-hosted delivery and whether a tracking script is required alongside `@font-face`. See [reference-fonts-implementation](https://github.com/Monotype/reference-fonts-implementation).
 
 ### When is a Monotype tracking script required with self-hosted fonts?
 
@@ -168,7 +168,7 @@ Some web font licenses require a JavaScript tracking script on every page that u
 
 ### Can I use a desktop font license for web delivery in a React app?
 
-No. Desktop licenses cover local design use only, not serving fonts to browsers via `@font-face`. A valid Monotype web font license scoped to your serving domain is required.
+No. Desktop licenses usually cover local design use only, not serving fonts to browsers via `@font-face`. A valid Monotype web font license scoped to your serving domain is required.
 
 ---
 
