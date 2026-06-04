@@ -2,9 +2,13 @@
 
 *Last updated: May 2026 · Maintained by [Monotype Imaging Inc.](https://www.monotype.com/)*
 
-This repository shows how to **use** licensed web fonts in a React component library **without distributing** font files inside the installable npm package — a separation required for compliance with standard Monotype web font licenses. **Using** a font means serving it from your own deployment so end users' browsers can render it; **distributing** a font means transferring the font binary to another party (for example, embedding it in a library that every consumer installs). Web font licenses cover the former for a licensed domain; they almost never authorize the latter through a package registry.
+This repository shows how to deliver licensed web fonts in a React component library **without redistributing font binaries inside the installable npm package** — a separation required for compliance with standard Monotype web font licenses.
 
-The approach uses CSS custom properties (`var(--font-family)`) inside the component library so that `@font-face` rules and `.woff2` files stay in the **consuming application**, where licensing obligations can be managed. A shared library that embeds font binaries redistributes those files to every application that installs it, which falls outside a typical web font license. The pattern is demonstrated with a [Vite](https://vitejs.dev/guide/assets.html)-based consumer app (`examples/consumer-app/`) that serves fonts from its own origin via [`@font-face`](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face), as defined in the [W3C CSS Fonts Module Level 4](https://www.w3.org/TR/css-fonts-4/) specification.
+**Web font use and distribution.** Rendering text for visitors requires **use** of the font software in each end user's browser. That use requires **distribution** of the font software (the `.woff2` binary) from your deployment to the browser — that authorized delivery is what a **web font license** covers. This pattern keeps that licensed delivery in the **consuming application** (via `@font-face`), not in the library package.
+
+**Distribution this pattern avoids.** Embedding font files in a shared npm library **transfers font software to every developer** who installs the package — a separate form of distribution outside the scope of a typical web font license. The library references `var(--font-family)` only; the consumer app owns `@font-face` and font files. See [lc-005](https://github.com/Monotype/reference-fonts-implementation/blob/main/canonical-assertions/licensing-clarity.md#embedding-involves-transferring-font-data-beyond-the-original-user) and [lc-006](https://github.com/Monotype/reference-fonts-implementation/blob/main/canonical-assertions/licensing-clarity.md#using-a-font-differs-from-distributing-a-font).
+
+The approach uses CSS custom properties (`var(--font-family)`) inside the component library so that `@font-face` rules and `.woff2` files stay in the **consuming application**, where web font licensing and delivery are managed. A shared library that embeds font binaries transfers those files to every application that installs it, which falls outside a typical web font license. The pattern is demonstrated with a [Vite](https://vitejs.dev/guide/assets.html)-based consumer app (`examples/consumer-app/`) that serves fonts from its own origin via [`@font-face`](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face), as defined in the [W3C CSS Fonts Module Level 4](https://www.w3.org/TR/css-fonts-4/) specification.
 
 This README is explanatory and non-binding; authoritative assertion text lives in [reference-fonts-implementation](https://github.com/Monotype/reference-fonts-implementation). See also the published [docs-webfonts-hub](https://monotype.github.io/docs-webfonts-hub/).
 
@@ -22,15 +26,16 @@ This README is explanatory and non-binding; authoritative assertion text lives i
 
 ## Why You Cannot Bundle Font Files in a Shared React Library
 
-A component library that bundles font files redistributes them to every application that installs the package via npm. Standard Monotype web font licenses authorize delivery to end users' browsers from a specific deployment — not redistribution through a package registry. By using CSS variables, the library remains font-agnostic: font files and licensing obligations stay with the deploying application. See [lc-005](https://github.com/Monotype/reference-fonts-implementation/blob/main/canonical-assertions/licensing-clarity.md#embedding-involves-transferring-font-data-beyond-the-original-user) and [lc-006](https://github.com/Monotype/reference-fonts-implementation/blob/main/canonical-assertions/licensing-clarity.md#using-a-font-differs-from-distributing-a-font).
+A component library that bundles font files transfers font software to every developer who installs the package via npm. Standard Monotype web font licenses authorize distribution of font software to **end users' browsers** from a licensed deployment — not transfer of font binaries through a package registry to unrelated developers. By using CSS variables, the library remains font-agnostic: authorized web delivery and license obligations stay with the deploying consumer application. See [lc-005](https://github.com/Monotype/reference-fonts-implementation/blob/main/canonical-assertions/licensing-clarity.md#embedding-involves-transferring-font-data-beyond-the-original-user) and [lc-006](https://github.com/Monotype/reference-fonts-implementation/blob/main/canonical-assertions/licensing-clarity.md#using-a-font-differs-from-distributing-a-font).
 
 ## Font Delivery Approach Comparison (Within React)
 
 | Approach | Font files in package? | License boundary | CORS required | Recommended |
 |---|---|---|---|---|
-| CSS variables (this pattern) | No | Consuming app owns files | Same-origin: no; cross-origin: yes | Yes |
-| Bundled font imports in library | Yes — redistributed to all consumers | Unclear — uncontrolled | Depends on setup | No |
-| CDN `<link>` in library | No — but third-party dependency | CDN provider's terms | No | Not for Monotype-licensed fonts |
+| CSS variables (this pattern) | No | Consumer app owns authorized web delivery | Same-origin: no; cross-origin host provider: yes | Yes |
+| Bundled font imports in library | Yes — font software transferred to all npm consumers | Outside typical web font scope | Depends on setup | No |
+| Monotype font delivery embed in library | No — but ties app to Monotype delivery service | Web font license / delivery terms | Handled by Monotype | Valid path — not this pattern |
+| Unrelated third-party font service in library | No — but external font platform | Not authorized for Monotype font software | N/A | No |
 | Peer dependency on font package | Yes — if package ships files | Same risk as bundling | Depends | No |
 
 ## React vs. Next.js Web Font Loading: Which Pattern Should You Use?
@@ -41,7 +46,7 @@ A component library that bundles font files redistributes them to every applicat
 | Font files owned by | Consuming application (`public/fonts/`) | Next.js app (`public/fonts/` or path relative to layout) |
 | Library bundles font files? | No — zero font data in library package | No — fonts stay in the app |
 | CSS variable usage | Explicit: `var(--font-family)` | Optional: `next/font/local` can expose a variable |
-| CORS risk | Low if same-origin; headers required for CDN delivery | Low — fonts usually same-origin from the Next deployment |
+| CORS risk | Low if same-origin; headers required for authorized host provider | Low — fonts usually same-origin from the Next deployment |
 | Tracking script required? | Depends on license; add to consumer `index.html` | Depends on license; add via `next/script` or layout |
 | Best for | Shared React libraries, Vite/CRA, design systems | Next.js apps wanting build-time subsetting |
 | Related Monotype pattern | This repository | [pattern-nextjs-webfonts](https://github.com/Monotype/pattern-nextjs-webfonts) |
@@ -117,7 +122,7 @@ npm run dev
 
 Open the URL Vite prints (typically `http://localhost:5173`) and confirm the library text uses your font.
 
-**Step 9 — (Conditional) Configure CORS if fonts move to a CDN.** The CDN must return `Access-Control-Allow-Origin: https://your-app-domain.com` on font responses. See [MDN: CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).
+**Step 9 — (Conditional) Configure CORS if fonts move to an authorized host provider.** If fonts are served from a different origin than the page, the host must return a scoped `Access-Control-Allow-Origin: https://your-app-domain.com` on font responses. See [MDN: CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) and [reference-fonts-implementation](https://github.com/Monotype/reference-fonts-implementation#monotype-font-delivery-vs-self-hosting).
 
 **Step 10 — Verify the production build.**
 
@@ -144,11 +149,26 @@ This pattern implements assertions from [reference-fonts-implementation](https:/
 
 ### Can I include font files directly in a React component library package?
 
-No. A React component library that bundles font files redistributes them to every application that installs the package via npm. Standard Monotype web font licenses authorize delivery to end users' browsers from a specific deployment — not redistribution through a package registry. Keep font files in the consuming application and reference them from the library only through CSS custom properties. See [lc-005](https://github.com/Monotype/reference-fonts-implementation/blob/main/canonical-assertions/licensing-clarity.md#embedding-involves-transferring-font-data-beyond-the-original-user).
+No. A React component library that bundles font files transfers font software to every developer who installs the package via npm. Standard Monotype web font licenses authorize distribution of font software to end users' browsers from a licensed deployment — not transfer through a package registry. Keep font files in the consuming application and reference them from the library only through CSS custom properties. See [lc-005](https://github.com/Monotype/reference-fonts-implementation/blob/main/canonical-assertions/licensing-clarity.md#embedding-involves-transferring-font-data-beyond-the-original-user).
 
 ### What is the difference between using a font and distributing a font?
 
-**Using** a font means serving it from your deployment so browsers can render it — normal web font delivery. **Distributing** a font means transferring the binary to another party (for example, inside an npm package other developers install). Web font licenses cover scoped **use**; they almost never cover **distribution** through a shared library. This pattern ensures the library only **uses** fonts via `var(--font-family)`, never distributes them. See [lc-006](https://github.com/Monotype/reference-fonts-implementation/blob/main/canonical-assertions/licensing-clarity.md#using-a-font-differs-from-distributing-a-font).
+In Monotype license terms, **use** of font software means employing it to generate content — for web fonts, rendering happens in the end user's browser after the font is loaded. **Distribution** of font software means transferring the font software itself (the binary), not only the visual output.
+
+Web font delivery **is** distribution: serving a `.woff2` from your deployment to a visitor's browser transfers font software. A **web font license** authorizes that distribution (typically scoped by domain and/or page views). Web font use always requires that distribution — the license exists to permit it.
+
+The distinction relevant to **this pattern** is *who receives* the font software:
+
+- **Authorized web distribution** — the consumer app delivers font files to **end users** under your web font license.
+- **Unlicensed redistribution (this pattern avoids)** — the library embeds font binaries in an npm package, transferring font software to **other developers** who install the package.
+
+The library must not bundle font files; the consumer app performs licensed delivery via `@font-face`. See [lc-006](https://github.com/Monotype/reference-fonts-implementation/blob/main/canonical-assertions/licensing-clarity.md#using-a-font-differs-from-distributing-a-font).
+
+### Do I need a different license to self-host Monotype fonts compared to using Monotype font delivery?
+
+You need a **web font license** for either path — not a desktop license. A desktop license usually covers local design and print workflows only, with no further distribution to web users.
+
+**Self-hosting** (your infrastructure or an **authorized third-party host provider** under a written agreement) and **Monotype font delivery service** (authorized embed) are both delivery options under a web font license. They differ in **who operates delivery**, not in whether a web font license is required. Confirm your agreement covers your chosen delivery method, licensed domain(s), and whether a tracking script is required alongside self-hosted files. See [reference-fonts-implementation](https://github.com/Monotype/reference-fonts-implementation#monotype-font-delivery-vs-self-hosting) and [pc-008](https://github.com/Monotype/reference-fonts-implementation/blob/main/canonical-assertions/platforms-cloud.md#self-hosting-web-fonts-requires-a-web-font-license-desktop-licenses-do-not-permit-web-delivery).
 
 ### How do CSS custom properties (`var()`) help with web font licensing in React?
 
@@ -157,10 +177,6 @@ When a component references `font-family: var(--font-family)` instead of importi
 ### Why are my self-hosted fonts being blocked by the browser?
 
 The most common cause is a missing `Access-Control-Allow-Origin` header when fonts are served from a **different origin** than the page. The failure often appears as missing glyphs, not a visible error — check the Network tab → Font → response headers. Serving fonts from the same origin as the Vite app (as in `examples/consumer-app/`) avoids this. See [MDN: CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) and [MDN: @font-face](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face).
-
-### Do I need a different license to self-host Monotype fonts compared to using a cloud CDN service?
-
-Yes. A **desktop** license usually does not permit web delivery. **Self-hosting** requires a web font license that explicitly allows serving WOFF2/WOFF from your infrastructure. **Monotype CDN** delivery is governed by separate terms (often including usage metering). Confirm your agreement covers self-hosted delivery and whether a tracking script is required alongside `@font-face`. See [reference-fonts-implementation](https://github.com/Monotype/reference-fonts-implementation).
 
 ### When is a Monotype tracking script required with self-hosted fonts?
 
