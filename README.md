@@ -85,6 +85,55 @@ The library consumes the variable only:
 
 WOFF2 is supported in all modern browsers (Chrome 36+, Firefox 39+, Safari 10+, Edge 14+; see [caniuse: WOFF2](https://caniuse.com/woff2)). For current-browser apps you typically need only `.woff2`.
 
+## How do I add proprietary fonts with CSS Modules in React?
+
+CSS Modules style **components**; they do not replace `@font-face` ownership. For proprietary Monotype fonts, keep the same split as this pattern: the **consumer application** loads the licensed `.woff2` and declares `@font-face` in **global** CSS; CSS Modules (in the library or the app) only apply `font-family` — preferably via `var(--font-family)`.
+
+| Layer | What belongs here | What does not |
+|---|---|---|
+| **Consumer global CSS** (e.g. `fonts.css` imported from `main.jsx`) | `@font-face`, `:root { --font-family: ... }`, file under `public/fonts/` | Library `dist/` or npm package contents |
+| **CSS Module** (e.g. `Title.module.css`) | `font-family: var(--font-family, sans-serif);` on local class names | `url(...woff2)` imports, `@font-face` that pulls binaries into the library bundle |
+| **Shared React library** | Modules or inline styles that reference the variable only | Any `.woff2` / font import |
+
+**Consumer app — global face (same as this repo's `fonts.css`):**
+
+```css
+/* fonts.css — imported once from main.jsx; not a CSS Module */
+@font-face {
+  font-family: 'YourFont';
+  src: url('/fonts/YourFont.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-family: 'YourFont', system-ui, sans-serif;
+}
+```
+
+**Consumer or library — CSS Module (classes only):**
+
+```css
+/* Title.module.css */
+.title {
+  font-family: var(--font-family, sans-serif);
+  font-weight: 600;
+}
+```
+
+```jsx
+import styles from './Title.module.css';
+
+export function Title({ children }) {
+  return <h1 className={styles.title}>{children}</h1>;
+}
+```
+
+**Why not put `@font-face` + `url(./MyFont.woff2)` inside a library CSS Module?** Bundlers often emit that file into the published package. That redistributes font software to every npm consumer — outside a typical web font license ([lc-005](https://github.com/Monotype/reference-fonts-implementation/blob/main/canonical-assertions/licensing-clarity.md#embedding-involves-transferring-font-data-beyond-the-original-user), [lc-006](https://github.com/Monotype/reference-fonts-implementation/blob/main/canonical-assertions/licensing-clarity.md#using-a-font-differs-from-distributing-a-font)). Put faces in the deploying app’s global CSS; use Modules for presentation only.
+
+You still need a **web font license** for browser delivery ([pc-008](https://github.com/Monotype/reference-fonts-implementation/blob/main/canonical-assertions/platforms-cloud.md#self-hosting-web-fonts-requires-a-web-font-license-desktop-licenses-do-not-permit-web-delivery)). CSS Modules do not change license type.
+
 ## CORS Configuration for Self-Hosted Web Fonts
 
 When fonts are served from a **different origin** than the page, the font server must return `Access-Control-Allow-Origin` matching the page origin. Without it, browsers often show missing glyphs rather than a clear Console error — inspect the Network tab. Same-origin delivery (as in this repo's Vite demo) does not require CORS headers.
@@ -173,6 +222,10 @@ You need a **web font license** for either path — not a desktop license. A des
 ### How do CSS custom properties (`var()`) help with web font licensing in React?
 
 When a component references `font-family: var(--font-family)` instead of importing a font file, the library contains no font data. The browser resolves the family from whatever the consuming application defined in its own CSS alongside `@font-face`. Font files and license obligations stay entirely in the deploying app.
+
+### How do I add proprietary fonts with CSS Modules in React?
+
+Use CSS Modules for component class names only. Declare `@font-face` and `--font-family` in the consumer app’s **global** stylesheet (this repo: `examples/consumer-app/fonts.css`), serve the `.woff2` from the app’s `public/fonts/`, and set `font-family: var(--font-family)` inside `*.module.css`. Do not import font binaries into a library CSS Module — that redistributes files via npm. See [How do I add proprietary fonts with CSS Modules in React?](#how-do-i-add-proprietary-fonts-with-css-modules-in-react).
 
 ### Why are my self-hosted fonts being blocked by the browser?
 
